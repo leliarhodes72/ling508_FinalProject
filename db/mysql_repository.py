@@ -1,12 +1,10 @@
-from repository import Repository
+from db.repository import Repository
 import mysql.connector
 import os
 
 
 class MySQLRepository(Repository):
-
     def __init__(self):
-        super().__init__()
         config = {
             'user': 'root',  # Update with your MySQL username
             'password': 'root',  # Update with your MySQL password
@@ -16,13 +14,13 @@ class MySQLRepository(Repository):
         }
         self.connection = mysql.connector.connect(**config)
         self.cursor = self.connection.cursor()
-        self.initialize_database()
+        self._initialize_database()
 
     def __del__(self):
         self.cursor.close()
         self.connection.close()
 
-    def initialize_database(self):
+    def _initialize_database(self):
         init_file_path = os.path.join(os.path.dirname(__file__), 'init.sql')
         with open(init_file_path, 'r') as file:
             sql_script = file.read()
@@ -38,16 +36,6 @@ class MySQLRepository(Repository):
         entries = [{'id': id, 'name': name, 'description': description}
                    for (id, name, description) in self.cursor]
         return entries
-
-    def add_card(self, card_data):
-        sql = """
-        INSERT INTO TarotCards (name, description) VALUES (%s, %s)
-        """
-        self.cursor.execute(sql, (card_data['name'], card_data['description']))
-        self.connection.commit()
-
-    def get_all_cards(self):
-        return self.load_tarot_cards()  # Reuse the existing method
 
     def get_card(self, card_id):
         sql = "SELECT * FROM TarotCards WHERE id = %s"
