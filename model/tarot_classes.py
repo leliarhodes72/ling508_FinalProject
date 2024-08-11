@@ -1,18 +1,22 @@
 from common_enums import AstrologicalBody, Element, Numerology
 
 class TarotCard:
-    def __init__(self, id, name, description, upright_meaning, reversed_meaning, numerology, element, astrological_body):
+    def __init__(self, id, name, description, upright_meaning, reversed_meaning, keyword, numerology, element, astrological_body):
         self.id = id  # int
         self.name = name  # string
         self.description = description  # string
         self.upright_meaning = upright_meaning  # meaning
         self.reversed_meaning = reversed_meaning  # meaning
+        self.keyword = keyword #string
         self.numerology = Numerology[numerology]  # Numerology enum
         self.element = Element[element]  # Element enum
         self.astrological_body = AstrologicalBody[astrological_body]  # AstrologicalBody enum
 
-    def get_meaning(self):
+    def get_upright_meaning(self):
         return self.upright_meaning.text
+    
+    def get_reversed_meaning(self):
+    	return self.reversed_meaning.text
 
 class Meaning:
     def __init__(self, id, text):

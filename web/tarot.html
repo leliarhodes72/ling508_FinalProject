@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarot Card Selector</title>
+    <script>
+        async function getCardInfo(event) {
+            event.preventDefault(); // Prevent form submission
+            
+            const cardSelect = document.getElementById('tarotCard');
+            const selectedCardId = cardSelect.value;
+
+            const response = await fetch(`http://localhost:5000/get_card/${selectedCardId}`);
+            const cardInfo = await response.json();
+
+            // Display card information
+            const resultDiv = document.getElementById('result');
+            if (cardInfo) {
+                resultDiv.innerHTML = `
+                    <h3>${cardInfo.name}</h3>
+                    <p><strong>Description:</strong> ${cardInfo.description}</p>
+                    <p><strong>Upright Meaning:</strong> ${cardInfo.upright_meaning}</p>
+                    <p><strong>Reversed Meaning:</strong> ${cardInfo.reversed_meaning}</p>
+                    <p><strong>Numerology:</strong> ${cardInfo.numerology}</p>
+                    <p><strong>Element:</strong> ${cardInfo.element}</p>
+                    <p><strong>Astrological Body:</strong> ${cardInfo.astrological_body}</p>
+                `;
+            } else {
+                resultDiv.innerHTML = '<p>Card not found.</p>';
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Select a Tarot Card</h1>
+    <form onsubmit="getCardInfo(event)">
+        <label for="tarotCard">Choose a card:</label>
+        <select id="tarotCard" name="tarotCard">
+            <option value="" disabled selected>Select a card</option>
+            <option value="The Fool">The Fool</option>
+            <option value="The Magician">The Magician</option>
+            <option value="The High Priestess">The High Priestess</option>
+            <option value="The Empress">The Empress</option>
+            <option value="The Emperor">The Emperor</option>
+            <option value="The Hierophant">The Hierophant</option>
+            <option value="The Lovers">The Lovers</option>
+            <option value="The Chariot">The Chariot</option>
+            <option value="Strength">Strength</option>
+            <option value="The Hermit">The Hermit</option>
+            <option value="Wheel of Fortune">Wheel of Fortune</option>
+            <option value="Justice">Justice</option>
+            <option value="The Hanged Man">The Hanged Man</option>
+            <option value="Death">Death</option>
+            <option value="Temperance">Temperance</option>
+            <option value="The Devil">The Devil</option>
+            <option value="The Tower">The Tower</option>
+            <option value="The Star">The Star</option>
+            <option value="The Moon">The Moon</option>
+            <option value="The Sun">The Sun</option>
+            <option value="Judgment">Judgment</option>
+            <option value="The World">The World</option>
+        </select>
+        <button type="submit">Get Card Info</button>
+    </form>
+
+    <div id="result"></div>
+</body>
+</html>

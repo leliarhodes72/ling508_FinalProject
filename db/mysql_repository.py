@@ -37,11 +37,39 @@ class MySQLRepository(Repository):
                    for (id, name, description) in self.cursor]
         return entries
 
-    def get_card(self, card_id):
+    def get_card(self, card_id: int) -> dict:
         sql = "SELECT * FROM TarotCards WHERE id = %s"
         self.cursor.execute(sql, (card_id,))
         result = self.cursor.fetchone()
         return {'id': result[0], 'name': result[1], 'description': result[2]} if result else None
+
+    def get_all_cards(self) -> list:
+        return self.load_tarot_cards()
+
+    def add_card(self, card_data: dict) -> None:
+        sql = """
+        INSERT INTO TarotCards (name, description, upright_meaning_id, reversed_meaning_id, numerology_id, element_id, astrological_body_id)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """
+        values = (
+            card_data['name'],
+            card_data['description'],
+            card_data['upright_meaning_id'],
+            card_data['reversed_meaning_id'],
+            card_data['keyword'],
+            card_data['numerology_id'],
+            card_data['element_id'],
+            card_data['astrological_body_id']
+        )
+        self.cursor.execute(sql, values)
+        self.connection.commit()
+
+    def get_card_by_name(self, card_name: str) -> dict:
+        sql = "SELECT * FROM TarotCards WHERE name = %s"
+        self.cursor.execute(sql, (card_name,))
+        result = self.cursor.fetchone()
+        return {'id': result[0], 'name': result[1], 'description': result[2]} if result else None
+
 
 # Usage
 if __name__ == "__main__":
